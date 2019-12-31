@@ -1,0 +1,2 @@
+#for some reason, this works for me on the command line but not when run as a script
+gcc -pedantic -Wall main.c -o main `sdl2-config --cflags --libs` && ./main
