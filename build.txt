@@ -1,2 +1,7 @@
 #for some reason, this works for me on the command line but not when run as a script
-gcc -pedantic -Wall main.c -o main `sdl2-config --cflags --libs` && ./main
+#i need to start up an external x server for this to actually run
+vcxsrv.exe -silent-dup-error; gcc -pedantic -Wall main.c -o main `sdl2-config --cflags --libs` && ./main
+#i am documenting here how I might build this program for windows, if I ever get mingw to work:
+sudo apt-get install mingw32
+gcc-mingw-w64 -pedantic -Wall main.c -o main.exe `sdl2-config --cflags --libs` && ./main.exe
+
