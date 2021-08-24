@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main(int argc, char** argv){
-	puts("Hello.");
+	puts("Hello. Initiating...");
 	if (SDL_Init(SDL_INIT_VIDEO)){
 		printf("SDL_Init Error: %s", SDL_GetError());
 		return 1;
@@ -36,25 +36,59 @@ int main(int argc, char** argv){
 		printf("SDL_CreateTextureFromSurface Error: %s", SDL_GetError());
 	}
   
-  //SDL_BlitSurface(testman, NULL, screenSurface, NULL );
-  //SDL_UpdateWindowSurface( window );
-  //SDL_Delay(5000);
-	for (int i = 0; i < 3; ++i){
+  //input / render loop
+  SDL_Event e;
+  int manr = 0;
+  int mand = 0;
+  while( SDL_PollEvent( &e ), 1 ){
+    //User requests quit. I guess this is from Xing out, which I've never seen in my setup, but it's here.
+    if( e.type == SDL_QUIT ) {
+      return 0;
+    }
+    //User presses a key
+    else if( e.type == SDL_KEYDOWN ){
+      //Select surfaces based on key press
+      switch( e.key.keysym.sym )
+      {
+        case SDLK_ESCAPE:
+        puts("ESC");
+        return 0;
+        break;
+
+        case SDLK_UP:
+        puts("U");
+        break;
+
+        case SDLK_DOWN:
+        puts("D");
+        mand++;
+        break;
+
+        case SDLK_LEFT:
+        puts("L");
+        break;
+
+        case SDLK_RIGHT:
+        puts("R");
+        manr++;
+        break;
+
+        default:
+        puts("!");
+        break;
+      }
+    }
 		//clear renderer
 		SDL_RenderClear(renderer);
 
 		//draw texture
-        const SDL_Rect fillRect = { 500 / 4, 500 / 4, 500 / 2, 500 / 2 };
-
+    const SDL_Rect fillRect = { 500 / 4, 500 / 4, 500 / 2 + manr, 500 / 2 + mand}; //can stretch image right and down, as you might expect from this line.
 		SDL_RenderCopy(renderer, texture, NULL, &fillRect);
-    
-    //SDL_SetRenderDrawColor( renderer, 0x00, 0xFF, 0x00, 0xFF ); 
-    //SDL_RenderFillRect( renderer, &fillRect );
     
 		//update screen
 		SDL_RenderPresent(renderer);
-		SDL_Delay(1000);
-	}
+		SDL_Delay(10);
+  }
 	puts("Goodbye.");
 	return 0;
 }
