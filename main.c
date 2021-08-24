@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	//Get window surface
 	SDL_Surface* screenSurface = SDL_GetWindowSurface(window);
 	//Fill the surface white
-	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0xFF, 0xFF));
 	//Update the surface
 	SDL_UpdateWindowSurface(window);
 	//Wait second
@@ -35,11 +35,22 @@ int main(int argc, char** argv){
 	if(!texture){
 		printf("SDL_CreateTextureFromSurface Error: %s", SDL_GetError());
 	}
+  
+  //SDL_BlitSurface(testman, NULL, screenSurface, NULL );
+  //SDL_UpdateWindowSurface( window );
+  //SDL_Delay(5000);
 	for (int i = 0; i < 3; ++i){
 		//clear renderer
 		SDL_RenderClear(renderer);
+
 		//draw texture
-		SDL_RenderCopy(renderer, texture, NULL, NULL);
+        const SDL_Rect fillRect = { 500 / 4, 500 / 4, 500 / 2, 500 / 2 };
+
+		SDL_RenderCopy(renderer, texture, NULL, &fillRect);
+    
+    //SDL_SetRenderDrawColor( renderer, 0x00, 0xFF, 0x00, 0xFF ); 
+    //SDL_RenderFillRect( renderer, &fillRect );
+    
 		//update screen
 		SDL_RenderPresent(renderer);
 		SDL_Delay(1000);
