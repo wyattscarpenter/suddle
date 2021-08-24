@@ -46,6 +46,8 @@ int main(int argc, char** argv){
   int manr = 0;
   int mand = 0;
   while( SDL_PollEvent( &e ), 1 ){
+    Uint64 start = SDL_GetPerformanceCounter();
+
     //User requests quit. I guess this is from Xing out, which I've never seen in my setup, but it's here.
     if( e.type == SDL_QUIT ) {
       return 0;
@@ -101,7 +103,7 @@ int main(int argc, char** argv){
       return 1;
     }
     SDL_Color textColor = {100,100,100,100};
-    SDL_Surface* textSurface = TTF_RenderText_Solid( font, "foo", textColor );
+    SDL_Surface *textSurface = TTF_RenderText_Solid( font, "foo", textColor );
     if( textSurface == NULL )
     {
       printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -116,6 +118,16 @@ int main(int argc, char** argv){
       //Get rid of old surface
       SDL_FreeSurface(textSurface);
     }
+
+	Uint64 end = SDL_GetPerformanceCounter();
+  char a[300] = {0};
+	double elapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
+	sprintf(a, "FPS: %d", (int) (1.0 / elapsed));
+  textSurface = TTF_RenderText_Solid( font, a, textColor );
+  SDL_Texture *ttexture = SDL_CreateTextureFromSurface( renderer, textSurface );
+  SDL_RenderCopy(renderer, ttexture, NULL, &(SDL_Rect){ 0, 0, textSurface->w, textSurface->h});
+  SDL_FreeSurface(textSurface);
+
     
 		//update screen
 		SDL_RenderPresent(renderer);
