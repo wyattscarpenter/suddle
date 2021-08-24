@@ -1,5 +1,10 @@
-#include "SDL.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 #include <stdio.h>
+
+int SCREEN_WIDTH  = 1920;
+int SCREEN_HEIGHT = 1080;
+
 
 int main(int argc, char** argv){
 	puts("Hello. Initiating...");
@@ -8,7 +13,7 @@ int main(int argc, char** argv){
 		return 1;
 	}
 	//now we create the window, which I have cleverly set to take up my entire screen
-	SDL_Window *window = SDL_CreateWindow("Hello World!", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN);
+	SDL_Window *window = SDL_CreateWindow("Hello World!", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (!window){
 		printf("SDL_CreateWindow Error: %s", SDL_GetError());
 		return 1;
@@ -84,6 +89,33 @@ int main(int argc, char** argv){
 		//draw texture
     const SDL_Rect fillRect = { 500 / 4, 500 / 4, 500 / 2 + manr, 500 / 2 + mand}; //can stretch image right and down, as you might expect from this line.
 		SDL_RenderCopy(renderer, texture, NULL, &fillRect);
+    
+    //draw text
+    if( TTF_Init() == -1 ){
+        printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+        return 1;
+    }
+    TTF_Font *font = TTF_OpenFont("fonts/BLKCHCRY.TTF", 24 );
+    if(!font){
+      printf( "Unable to open font! SDL_ttf Error: %s\n", TTF_GetError() );
+      return 1;
+    }
+    SDL_Color textColor = {100,100,100,100};
+    SDL_Surface* textSurface = TTF_RenderText_Solid( font, "foo", textColor );
+    if( textSurface == NULL )
+    {
+      printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+    } else {
+      SDL_Texture *ttexture = SDL_CreateTextureFromSurface( renderer, textSurface );
+      if(!ttexture){
+        printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+      } else {
+        //center print it using text-rendered w and h
+        SDL_RenderCopy(renderer, ttexture, NULL, &(SDL_Rect){ (SCREEN_WIDTH - textSurface->w )/2, (SCREEN_HEIGHT - textSurface->h )/2, textSurface->w, textSurface->h});
+      }
+      //Get rid of old surface
+      SDL_FreeSurface(textSurface);
+    }
     
 		//update screen
 		SDL_RenderPresent(renderer);

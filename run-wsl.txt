@@ -1,3 +1,3 @@
-gcc -pedantic -Wall main.c -o main `sdl2-config --cflags --libs`
+gcc -pedantic -Wall main.c -o main -lSDL2_ttf `sdl2-config --cflags --libs` 
 vcxsrv.exe -silent-dup-error & #i need to start up an external x server for this to actually run
 ./main
